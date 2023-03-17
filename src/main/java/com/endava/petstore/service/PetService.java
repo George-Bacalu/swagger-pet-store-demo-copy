@@ -17,4 +17,6 @@ public interface PetService {
     void deletePetById(Long petId);
 
     List<Pet> getPetsByStatus(Status[] statuses);
+
+    List<Pet> getPetsByTags(List<String> tagNames);
 }

@@ -1,5 +1,6 @@
 package com.endava.petstore.controller;
 
+import com.endava.petstore.exception.ResourceNotFoundException;
 import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
 import com.endava.petstore.service.PetService;
@@ -92,5 +93,17 @@ public class PetController {
     @GetMapping("/findByStatus")
     public ResponseEntity<List<Pet>> getPetsByStatus(@ApiParam(value = "Status values that need to be considered for filter", allowableValues = "available, pending, sold", allowMultiple = true, required = true) @RequestParam @Valid Status[] status) {
         return ResponseEntity.ok(petService.getPetsByStatus(status));
+    }
+
+    @ApiOperation(value = "Finds pets by tags", notes = "Multiple tags can be provided with comma separated strings. Use test_tag1, test_tag2, test_tag3 for testing", response = List.class)
+    @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 400, message = "Invalid tag value")})
+    @GetMapping("/findByTags")
+    public ResponseEntity<List<Pet>> getPetsByTags(@ApiParam(value = "Tags to filter by", allowMultiple = true, required = true) @RequestParam @Valid List<String> tags) {
+        if(tags.isEmpty()) {
+            throw new ResourceNotFoundException("No tags were provided");
+        }
+        return ResponseEntity.ok(petService.getPetsByTags(tags));
     }
 }

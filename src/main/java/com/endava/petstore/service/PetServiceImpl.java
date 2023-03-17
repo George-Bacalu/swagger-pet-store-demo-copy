@@ -42,4 +42,9 @@ public class PetServiceImpl implements PetService {
     public List<Pet> getPetsByStatus(Status[] statuses) {
         return petRepository.getPetsByStatus(statuses);
     }
+
+    @Override
+    public List<Pet> getPetsByTags(List<String> tagNames) {
+        return petRepository.getPetsByTags(tagNames);
+    }
 }
