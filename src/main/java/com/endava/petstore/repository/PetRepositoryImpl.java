@@ -1,5 +1,6 @@
 package com.endava.petstore.repository;
 
+import com.endava.petstore.exception.ResourceNotFoundException;
 import com.endava.petstore.model.Category;
 import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
+
+import static com.endava.petstore.constants.Constants.PET_NOT_FOUND;
 
 @Repository
 public class PetRepositoryImpl implements PetRepository {
@@ -60,7 +63,7 @@ public class PetRepositoryImpl implements PetRepository {
     public Pet getPetById(Long petId) {
         return pets.values().stream()
               .filter(pet -> Objects.equals(pet.getId(), petId)).findFirst()
-              .orElseThrow(() -> new RuntimeException(String.format("There is no pet with id %s", petId)));
+              .orElseThrow(() -> new ResourceNotFoundException(String.format(PET_NOT_FOUND, petId)));
     }
 
     @Override
