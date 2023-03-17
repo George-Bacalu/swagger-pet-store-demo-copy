@@ -15,6 +15,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import static com.endava.petstore.constants.Constants.PET_NOT_FOUND;
 
@@ -107,5 +108,15 @@ public class PetRepositoryImpl implements PetRepository {
         pet.setName(name);
         pet.setStatus(Status.valueOf(status));
         return new HttpResponse(HttpStatus.OK.value(), "unknown", String.format("Updated pet with id %s", petId));
+    }
+
+    @Override
+    public HttpResponse uploadPetImage(Long petId, String additionalMetadata, MultipartFile file) {
+        Pet pet = getPetById(petId);
+        List<String> photoUrls = new ArrayList<>(pet.getPhotoUrls());
+        photoUrls.add(String.format("https://www.%s", file.getOriginalFilename()));
+        pet.setPhotoUrls(photoUrls);
+        savePet(pet);
+        return new HttpResponse(HttpStatus.OK.value(), "unknown", String.format("additionalMetadata: %s%nFile uploaded to %s (%s bytes)", additionalMetadata, file.getOriginalFilename(), file.getSize()));
     }
 }

@@ -3,6 +3,7 @@ package com.endava.petstore.controller;
 import com.endava.petstore.exception.ResourceNotFoundException;
 import com.endava.petstore.model.HttpResponse;
 import com.endava.petstore.model.ModelRequestUpdatePet;
+import com.endava.petstore.model.ModelRequestUploadImage;
 import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
 import com.endava.petstore.service.PetService;
@@ -25,7 +26,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
@@ -118,5 +121,14 @@ public class PetController {
     @PostMapping(value = "/{petId}", consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse> updatePetFormData(@ModelAttribute ModelRequestUpdatePet modelRequestUpdatePet, @ApiParam(value = "ID of pet that needs to be updated", example = "1", required = true) @PathVariable Long petId) {
         return ResponseEntity.ok(petService.updatePetFormData(petId, modelRequestUpdatePet.getName(), modelRequestUpdatePet.getStatus().name()));
+    }
+
+    @ApiOperation(value = "Uploads an image", response = Pet.class)
+    @ApiResponses(value =  {
+          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 405, message = "Invalid input")})
+    @PostMapping(value = "/{petId}/uploadImage", consumes = MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpResponse> uploadPetImage(@ModelAttribute ModelRequestUploadImage modelRequestUploadImage, @ApiParam(value = "ID of pet to update", example = "1", required = true) @PathVariable Long petId, @ApiParam(value = "File to upload") @RequestPart MultipartFile file) {
+        return ResponseEntity.ok(petService.uploadPetImage(petId, modelRequestUploadImage.getAdditionalMetadata(), file));
     }
 }

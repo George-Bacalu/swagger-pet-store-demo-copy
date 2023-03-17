@@ -4,6 +4,7 @@ import com.endava.petstore.model.HttpResponse;
 import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
 import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PetService {
 
@@ -22,4 +23,6 @@ public interface PetService {
     List<Pet> getPetsByTags(List<String> tagNames);
 
     HttpResponse updatePetFormData(Long petId, String name, String status);
+
+    HttpResponse uploadPetImage(Long petId, String additionalMetadata, MultipartFile file);
 }
