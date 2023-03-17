@@ -1,5 +1,6 @@
 package com.endava.petstore.service;
 
+import com.endava.petstore.model.HttpResponse;
 import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
 import com.endava.petstore.repository.PetRepository;
@@ -46,5 +47,10 @@ public class PetServiceImpl implements PetService {
     @Override
     public List<Pet> getPetsByTags(List<String> tagNames) {
         return petRepository.getPetsByTags(tagNames);
+    }
+
+    @Override
+    public HttpResponse updatePetFormData(Long petId, String name, String status) {
+        return petRepository.updatePetFormData(petId, name, status);
     }
 }
