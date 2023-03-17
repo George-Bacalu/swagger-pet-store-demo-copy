@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.endava.petstore.constants.Constants.TAGS_NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -88,7 +89,7 @@ public class PetController {
           @ApiResponse(code = 400, message = "Invalid ID supplied"),
           @ApiResponse(code = 404, message = "Pet not found")})
     @DeleteMapping("/{petId}")
-    public ResponseEntity<Void> deletePet(@ApiParam(value = "Pet ID to delete", example = "1", required = true) @PathVariable Long petId) {
+    public ResponseEntity<Void> deletePetById(@ApiParam(value = "Pet ID to delete", example = "1", required = true) @PathVariable Long petId) {
         petService.deletePetById(petId);
         return ResponseEntity.noContent().build();
     }
@@ -98,7 +99,9 @@ public class PetController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid status value")})
     @GetMapping("/findByStatus")
-    public ResponseEntity<List<Pet>> getPetsByStatus(@ApiParam(value = "Status values that need to be considered for filter", allowableValues = "available, pending, sold", allowMultiple = true, required = true) @RequestParam @Valid Status[] status) {
+    public ResponseEntity<List<Pet>> getPetsByStatus(
+          @ApiParam(value = "Status values that need to be considered for filter", allowableValues = "available, pending, sold", allowMultiple = true, required = true)
+          @RequestParam @Valid Status[] status) {
         return ResponseEntity.ok(petService.getPetsByStatus(status));
     }
 
@@ -109,7 +112,7 @@ public class PetController {
     @GetMapping("/findByTags")
     public ResponseEntity<List<Pet>> getPetsByTags(@ApiParam(value = "Tags to filter by", allowMultiple = true, required = true) @RequestParam @Valid List<String> tags) {
         if(tags.isEmpty()) {
-            throw new ResourceNotFoundException("No tags were provided");
+            throw new ResourceNotFoundException(TAGS_NOT_FOUND);
         }
         return ResponseEntity.ok(petService.getPetsByTags(tags));
     }
@@ -119,7 +122,8 @@ public class PetController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 405, message = "Invalid input")})
     @PostMapping(value = "/{petId}", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpResponse> updatePetFormData(@ModelAttribute ModelRequestUpdatePet modelRequestUpdatePet, @ApiParam(value = "ID of pet that needs to be updated", example = "1", required = true) @PathVariable Long petId) {
+    public ResponseEntity<HttpResponse> updatePetFormData(@ModelAttribute ModelRequestUpdatePet modelRequestUpdatePet,
+                                                          @ApiParam(value = "ID of pet that needs to be updated", example = "1", required = true) @PathVariable Long petId) {
         return ResponseEntity.ok(petService.updatePetFormData(petId, modelRequestUpdatePet.getName(), modelRequestUpdatePet.getStatus().name()));
     }
 
@@ -128,7 +132,9 @@ public class PetController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 405, message = "Invalid input")})
     @PostMapping(value = "/{petId}/uploadImage", consumes = MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpResponse> uploadPetImage(@ModelAttribute ModelRequestUploadImage modelRequestUploadImage, @ApiParam(value = "ID of pet to update", example = "1", required = true) @PathVariable Long petId, @ApiParam(value = "File to upload") @RequestPart MultipartFile file) {
+    public ResponseEntity<HttpResponse> uploadPetImage(@ModelAttribute ModelRequestUploadImage modelRequestUploadImage,
+                                                       @ApiParam(value = "ID of pet to update", example = "1", required = true) @PathVariable Long petId,
+                                                       @ApiParam(value = "File to upload") @RequestPart MultipartFile file) {
         return ResponseEntity.ok(petService.uploadPetImage(petId, modelRequestUploadImage.getAdditionalMetadata(), file));
     }
 }
