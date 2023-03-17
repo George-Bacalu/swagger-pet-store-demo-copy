@@ -1,6 +1,7 @@
 package com.endava.petstore.repository;
 
 import com.endava.petstore.model.Pet;
+import com.endava.petstore.model.Status;
 import java.util.List;
 
 public interface PetRepository {
@@ -14,4 +15,6 @@ public interface PetRepository {
     Pet updatePet(Pet pet);
 
     void deletePetById(Long petId);
+
+    List<Pet> getPetsByStatus(Status[] statuses);
 }

@@ -1,6 +1,7 @@
 package com.endava.petstore.controller;
 
 import com.endava.petstore.model.Pet;
+import com.endava.petstore.model.Status;
 import com.endava.petstore.service.PetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -81,5 +83,14 @@ public class PetController {
     public ResponseEntity<Void> deletePet(@ApiParam(value = "Pet ID to delete", example = "1", required = true) @PathVariable Long petId) {
         petService.deletePetById(petId);
         return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "Finds pets by status", notes = "Multiple status values can be provided with comma separated string", response = List.class)
+    @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 400, message = "Invalid status value")})
+    @GetMapping("/findByStatus")
+    public ResponseEntity<List<Pet>> getPetsByStatus(@ApiParam(value = "Status values that need to be considered for filter", allowableValues = "available, pending, sold", allowMultiple = true, required = true) @RequestParam @Valid Status[] status) {
+        return ResponseEntity.ok(petService.getPetsByStatus(status));
     }
 }

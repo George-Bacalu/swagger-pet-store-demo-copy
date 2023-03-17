@@ -6,6 +6,7 @@ import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
 import com.endava.petstore.model.Tag;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,5 +86,11 @@ public class PetRepositoryImpl implements PetRepository {
     @Override
     public void deletePetById(Long petId) {
         pets.remove(getPetById(petId).getId());
+    }
+
+    @Override
+    public List<Pet> getPetsByStatus(Status[] statuses) {
+        List<String> statusList = Arrays.stream(statuses).map(Enum::name).toList();
+        return pets.values().stream().filter(pet -> statusList.stream().anyMatch(status -> pet.getStatus().name().equals(status))).toList();
     }
 }

@@ -1,6 +1,7 @@
 package com.endava.petstore.service;
 
 import com.endava.petstore.model.Pet;
+import com.endava.petstore.model.Status;
 import com.endava.petstore.repository.PetRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,10 @@ public class PetServiceImpl implements PetService {
     @Override
     public void deletePetById(Long petId) {
         petRepository.deletePetById(petId);
+    }
+
+    @Override
+    public List<Pet> getPetsByStatus(Status[] statuses) {
+        return petRepository.getPetsByStatus(statuses);
     }
 }
