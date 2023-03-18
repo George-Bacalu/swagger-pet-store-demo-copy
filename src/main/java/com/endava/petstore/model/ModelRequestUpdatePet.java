@@ -24,5 +24,5 @@ public class ModelRequestUpdatePet implements Serializable {
 
     @ApiModelProperty(notes = "status", dataType = "string")
     @ApiParam(value = "Updated status of the pet")
-    private Status status;
+    private String status;
 }

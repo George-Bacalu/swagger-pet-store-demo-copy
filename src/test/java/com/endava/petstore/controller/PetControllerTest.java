@@ -1,6 +1,6 @@
 package com.endava.petstore.controller;
 
-import com.endava.petstore.exception.ResourceNotFoundException;
+import com.endava.petstore.exception.InvalidResourceException;
 import com.endava.petstore.model.HttpResponse;
 import com.endava.petstore.model.ModelRequestUpdatePet;
 import com.endava.petstore.model.ModelRequestUploadImage;
@@ -124,7 +124,7 @@ class PetControllerTest {
     void getPetsByTags_withEmptyList_shouldThrowException() {
         List<String> tagNames = List.of();
         assertThatThrownBy(() -> petController.getPetsByTags(tagNames))
-              .isInstanceOf(ResourceNotFoundException.class)
+              .isInstanceOf(InvalidResourceException.class)
               .hasMessage(TAGS_NOT_FOUND);
     }
 
@@ -134,7 +134,7 @@ class PetControllerTest {
         Status status = Status.AVAILABLE;
         HttpResponse httpResponse = new HttpResponse(HttpStatus.OK.value(), "unknown", String.format(PET_UPDATED, 1L));
         given(petService.updatePetFormData(1L, name, status.name())).willReturn(httpResponse);
-        ResponseEntity<HttpResponse> response = petController.updatePetFormData(new ModelRequestUpdatePet(name, status), 1L);
+        ResponseEntity<HttpResponse> response = petController.updatePetFormData(new ModelRequestUpdatePet(name, status.name()), 1L);
         verify(petService).updatePetFormData(1L, name, status.name());
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

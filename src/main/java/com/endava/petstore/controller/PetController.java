@@ -1,6 +1,6 @@
 package com.endava.petstore.controller;
 
-import com.endava.petstore.exception.ResourceNotFoundException;
+import com.endava.petstore.exception.InvalidResourceException;
 import com.endava.petstore.model.HttpResponse;
 import com.endava.petstore.model.ModelRequestUpdatePet;
 import com.endava.petstore.model.ModelRequestUploadImage;
@@ -112,7 +112,7 @@ public class PetController {
     @GetMapping("/findByTags")
     public ResponseEntity<List<Pet>> getPetsByTags(@ApiParam(value = "Tags to filter by", allowMultiple = true, required = true) @RequestParam @Valid List<String> tags) {
         if(tags.isEmpty()) {
-            throw new ResourceNotFoundException(TAGS_NOT_FOUND);
+            throw new InvalidResourceException(TAGS_NOT_FOUND);
         }
         return ResponseEntity.ok(petService.getPetsByTags(tags));
     }
@@ -124,7 +124,7 @@ public class PetController {
     @PostMapping(value = "/{petId}", consumes = MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse> updatePetFormData(@ModelAttribute ModelRequestUpdatePet modelRequestUpdatePet,
                                                           @ApiParam(value = "ID of pet that needs to be updated", example = "1", required = true) @PathVariable Long petId) {
-        return ResponseEntity.ok(petService.updatePetFormData(petId, modelRequestUpdatePet.getName(), modelRequestUpdatePet.getStatus().name()));
+        return ResponseEntity.ok(petService.updatePetFormData(petId, modelRequestUpdatePet.getName(), modelRequestUpdatePet.getStatus()));
     }
 
     @ApiOperation(value = "Uploads an image", response = Pet.class)
