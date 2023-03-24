@@ -5,8 +5,6 @@ import com.endava.petstore.model.ModelRequestUpdatePet;
 import com.endava.petstore.model.ModelRequestUploadImage;
 import com.endava.petstore.model.Pet;
 import com.endava.petstore.model.Status;
-import com.endava.petstore.repository.PetRepository;
-import com.endava.petstore.service.PetService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -40,12 +38,6 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class PetControllerIntegrationTest {
 
-    @Autowired
-    private PetController petController;
-    @Autowired
-    private PetService petService;
-    @Autowired
-    private PetRepository petRepository;
     @Autowired
     private TestRestTemplate template;
     @Autowired
