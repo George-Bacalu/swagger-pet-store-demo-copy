@@ -36,7 +36,7 @@ public class Order implements Serializable {
     @DateTimeFormat
     private LocalDateTime shipDate;
 
-    @JsonProperty("status")
+    @JsonProperty("orderStatus")
     @ApiModelProperty(name = "status", dataType = "string", value = "Order Status")
     @NotNull(message = "Order status must not be null")
     private OrderStatus orderStatus;

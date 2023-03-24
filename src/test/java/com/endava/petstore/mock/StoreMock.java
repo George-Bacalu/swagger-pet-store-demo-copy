@@ -46,4 +46,15 @@ public class StoreMock {
               .complete(true)
               .build();
     }
+
+    public static Order getMockedInvalidOrder() {
+        return Order.builder()
+              .id(4L)
+              .petId(999L)
+              .quantity(2)
+              .shipDate(LocalDateTime.of(2000, 1, 4, 0, 0, 0))
+              .orderStatus(OrderStatus.DELIVERED)
+              .complete(true)
+              .build();
+    }
 }

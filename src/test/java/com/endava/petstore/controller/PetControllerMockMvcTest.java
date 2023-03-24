@@ -42,7 +42,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest
+@WebMvcTest(PetController.class)
 class PetControllerMockMvcTest {
 
     @Autowired
@@ -119,7 +119,7 @@ class PetControllerMockMvcTest {
     void getPetById_withInvalidId_shouldThrowException() throws Exception {
         Long petId = 999L;
         given(petService.getPetById(petId)).willThrow(new ResourceNotFoundException(String.format(PET_NOT_FOUND, petId)));
-        mockMvc.perform(get("/pet/{petId}", 999L).accept(APPLICATION_JSON_VALUE))
+        mockMvc.perform(get("/pet/{petId}", petId).accept(APPLICATION_JSON_VALUE))
               .andExpect(status().isNotFound())
               .andExpect(jsonPath("$.message").value(String.format(PET_NOT_FOUND, petId)))
               .andReturn();
@@ -149,7 +149,7 @@ class PetControllerMockMvcTest {
     @Test
     void updatePet_shouldModifyCurrentPet() throws Exception {
         given(petService.updatePet(any(Pet.class))).willReturn(pet2);
-        MvcResult result = mockMvc.perform(put("/pet")
+        MvcResult result = mockMvc.perform(put("/pet").accept(APPLICATION_JSON_VALUE)
                     .contentType(APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(pet2)))
               .andExpect(status().isOk())

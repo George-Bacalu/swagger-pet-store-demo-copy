@@ -47,7 +47,7 @@ class PetRepositoryIntegrationTest {
     }
 
     @Test
-    void getPetById_shouldReturnPetWithGivenId() {
+    void getPetById_withValidId_shouldReturnPetWithGivenId() {
         Pet result = petRepository.getPetById(1L);
         assertThat(result).isEqualTo(pet1);
     }
