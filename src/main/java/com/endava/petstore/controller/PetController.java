@@ -85,7 +85,7 @@ public class PetController {
 
     @ApiOperation(value = "Deletes a pet")
     @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 204, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid ID supplied"),
           @ApiResponse(code = 404, message = "Pet not found")})
     @DeleteMapping("/{petId}")
