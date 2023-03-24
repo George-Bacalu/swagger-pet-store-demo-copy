@@ -3,6 +3,7 @@ package com.endava.petstore.repository;
 import com.endava.petstore.model.Order;
 import com.endava.petstore.exception.ResourceNotFoundException;
 import com.endava.petstore.model.OrderStatus;
+import com.endava.petstore.model.Pet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,5 +88,10 @@ public class StoreRepositoryImpl implements StoreRepository {
     @Override
     public void deleteOrderById(Long orderId) {
         orders.remove(getOrderById(orderId).getId());
+    }
+
+    @Override
+    public List<Pet> getPetsByOrderStatus(OrderStatus orderStatus) {
+        return orders.values().stream().filter(order -> order.getOrderStatus().equals(orderStatus)).map(order -> petRepository.getPetById(order.getPetId())).toList();
     }
 }
