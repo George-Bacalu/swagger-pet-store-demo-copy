@@ -90,7 +90,7 @@ public class UserController {
           @ApiResponse(code = 405, message = "Invalid input")})
     @PostMapping(value = "/createWithArray", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public ResponseEntity<List<User>> saveUsersArray(@ApiParam(value = "List of user object", required = true) @RequestBody @Valid User[] users) {
-        return ResponseEntity.ok(userService.saveUsersArray(users));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUsersArray(users));
     }
 
     @ApiOperation(value = "Creates list of users with given input array", response = List.class)
@@ -99,7 +99,7 @@ public class UserController {
           @ApiResponse(code = 405, message = "Invalid input")})
     @PostMapping(value = "/createWithList", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public ResponseEntity<List<User>> saveUsersList(@ApiParam(value = "List of user object", required = true) @RequestBody @Valid List<User> users) {
-        return ResponseEntity.ok(userService.saveUsersList(users));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUsersList(users));
     }
 
     @ApiOperation(value = "Get user by user name", response = User.class)
