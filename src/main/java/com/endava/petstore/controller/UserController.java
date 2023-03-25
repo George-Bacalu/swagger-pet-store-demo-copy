@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -113,7 +114,7 @@ public class UserController {
 
     @ApiOperation(value = "Update user by user name", notes = "This can only be done by the logged in user", response = User.class)
     @ApiResponses(value = {
-          @ApiResponse(code = 204, message = "Successful operation"),
+          @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid username supplied"),
           @ApiResponse(code = 404, message = "User not found")})
     @PutMapping(value = "/by/{username}", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
@@ -131,5 +132,24 @@ public class UserController {
     public ResponseEntity<Void> deleteUserByUsername(@ApiParam(value = "Username that needs to be deleted", required = true) @PathVariable String username) {
         userService.deleteUserByUsername(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "Logs user into the system")
+    @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 400, message = "Invalid username/password supplied")})
+    @GetMapping("/login")
+    public ResponseEntity<String> login(@ApiParam(value = "The user name for login", required = true) @RequestParam String username,
+                                        @ApiParam(value = "The password for login in clear text", required = true) @RequestParam String password) {
+        return ResponseEntity.ok(userService.login(username, password));
+    }
+
+    @ApiOperation(value = "Logs out current logged in user session")
+    @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 401, message = "Unauthorized")})
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok(userService.logout());
     }
 }

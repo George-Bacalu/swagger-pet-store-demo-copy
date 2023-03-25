@@ -61,4 +61,14 @@ public class UserServiceImpl implements UserService {
     public void deleteUserByUsername(String username) {
         userRepository.deleteUserByUsername(username);
     }
+
+    @Override
+    public String login(String username, String password) {
+        return userRepository.login(username, password);
+    }
+
+    @Override
+    public String logout() {
+        return userRepository.logout();
+    }
 }

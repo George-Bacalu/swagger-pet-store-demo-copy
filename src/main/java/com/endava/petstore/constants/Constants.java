@@ -13,4 +13,5 @@ public class Constants {
     public static final String ORDER_NOT_FOUND = "There is no order with id %s";
     public static final String USER_NOT_FOUND = "There is no user with id %s";
     public static final String USERNAME_NOT_FOUND = "There is no user with username %s";
+    public static final String INVALID_USER_CREDENTIALS = "There is no user with username %s and password %s";
 }

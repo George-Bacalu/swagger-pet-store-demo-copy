@@ -1,5 +1,6 @@
 package com.endava.petstore.repository;
 
+import com.endava.petstore.exception.InvalidResourceException;
 import com.endava.petstore.exception.ResourceNotFoundException;
 import com.endava.petstore.model.User;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
+import static com.endava.petstore.constants.Constants.INVALID_USER_CREDENTIALS;
 import static com.endava.petstore.constants.Constants.USERNAME_NOT_FOUND;
 import static com.endava.petstore.constants.Constants.USER_NOT_FOUND;
 
@@ -113,6 +115,19 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void deleteUserByUsername(String username) {
         users.remove(getUserByUsername(username).getId());
+    }
+
+    @Override
+    public String login(String username, String password) {
+        if(!getUserByUsername(username).getPassword().equals(password)) {
+            throw new InvalidResourceException(String.format(INVALID_USER_CREDENTIALS, username, password));
+        }
+        return "Logged in successfully";
+    }
+
+    @Override
+    public String logout() {
+        return "Logged out successfully";
     }
 
     private User getUpdatedUserFields(User user, User updatedUser) {

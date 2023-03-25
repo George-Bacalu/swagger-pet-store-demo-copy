@@ -24,4 +24,8 @@ public interface UserRepository {
     User updateUserByUsername(User user, String username);
 
     void deleteUserByUsername(String username);
+
+    String login(String username, String password);
+
+    String logout();
 }
