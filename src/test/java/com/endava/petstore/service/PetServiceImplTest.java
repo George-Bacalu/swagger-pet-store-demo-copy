@@ -102,8 +102,7 @@ class PetServiceImplTest {
 
     @Test
     void updatePetFormData_shouldModifyCurrentPetAccordingToForm() {
-        String name = "test_pet1";
-        String status = "available";
+        String name = "test_pet1", status = "available";
         HttpResponse httpResponse = new HttpResponse(HttpStatus.OK.value(), "unknown", String.format(PET_UPDATED, 1L));
         given(petRepository.updatePetFormData(1L, name, status)).willReturn(httpResponse);
         HttpResponse result = petService.updatePetFormData(1L, name, status);

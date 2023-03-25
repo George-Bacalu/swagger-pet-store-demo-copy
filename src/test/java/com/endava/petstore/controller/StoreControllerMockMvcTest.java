@@ -166,7 +166,7 @@ class StoreControllerMockMvcTest {
               .andExpect(jsonPath("$.orderStatus").value(order2.getOrderStatus().name()))
               .andExpect(jsonPath("$.complete").value(order2.getComplete()))
               .andReturn();
-        verify(storeService).saveOrder(order2);
+        verify(storeService).updateOrder(order2);
         Order response = objectMapper.readValue(result.getResponse().getContentAsString(), Order.class);
         assertThat(response).isEqualTo(order2);
     }

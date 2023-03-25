@@ -93,28 +93,26 @@ class PetControllerIntegrationTest {
 
     @Test
     void updatePet_shouldModifyCurrentPet() {
-        ResponseEntity<Pet> response = template.exchange("/pet", HttpMethod.PUT, null, Pet.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        ResponseEntity<Pet> response = template.exchange("/pet", HttpMethod.PUT, new HttpEntity<>(pet2, headers), Pet.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON);
-        assertThat(response.getBody()).isEqualTo(pet1);
+        assertThat(response.getBody()).isEqualTo(pet2);
     }
 
     @Test
     void deletePet_shouldRemovePetFromList() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(APPLICATION_JSON);
-        ResponseEntity<Pet> response = template.exchange("/pet/1", HttpMethod.DELETE, new HttpEntity<Pet>(httpHeaders), Pet.class);
+        ResponseEntity<Void> response = template.exchange("/pet/1", HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON);
         ResponseEntity<Pet> getResponse = template.exchange("/pet/1", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
         assertNotNull(getResponse);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         ResponseEntity<List<Pet>> getAllResponse = template.exchange("/pet", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
         assertNotNull(getAllResponse);
         assertThat(Objects.requireNonNull(getAllResponse.getBody()).stream().anyMatch(pet -> pet.getId() == 1L)).isFalse();
-        assertThat(response.getBody()).isEqualTo(pet1);
     }
 
     @Test
