@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -107,7 +108,7 @@ public class UserController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid username supplied"),
           @ApiResponse(code = 404, message = "User not found")})
-    @GetMapping("/by/{username}")
+    @GetMapping("/username/{username}")
     public ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use test_username1 for testing", required = true) @PathVariable String username) {
         return ResponseEntity.ok(userService.getUserByUsername(username));
     }
@@ -117,7 +118,7 @@ public class UserController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid username supplied"),
           @ApiResponse(code = 404, message = "User not found")})
-    @PutMapping(value = "/by/{username}", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
+    @PutMapping(value = "/username/{username}", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public ResponseEntity<User> updateUserByUsername(@ApiParam(value = "Updated user object", required = true) @RequestBody @Valid User user,
                                                      @ApiParam(value = "Username that needs to be updated", required = true) @PathVariable String username) {
         return ResponseEntity.ok(userService.updateUserByUsername(user, username));
@@ -128,7 +129,7 @@ public class UserController {
           @ApiResponse(code = 204, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid ID supplied"),
           @ApiResponse(code = 404, message = "User not found")})
-    @DeleteMapping("/by/{username}")
+    @DeleteMapping("/username/{username}")
     public ResponseEntity<Void> deleteUserByUsername(@ApiParam(value = "Username that needs to be deleted", required = true) @PathVariable String username) {
         userService.deleteUserByUsername(username);
         return ResponseEntity.noContent().build();
@@ -139,9 +140,9 @@ public class UserController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid username/password supplied")})
     @GetMapping("/login")
-    public ResponseEntity<String> login(@ApiParam(value = "The user name for login", required = true) @RequestParam String username,
-                                        @ApiParam(value = "The password for login in clear text", required = true) @RequestParam String password) {
-        return ResponseEntity.ok(userService.login(username, password));
+    public ResponseEntity<Map<String, String>> login(@ApiParam(value = "The user name for login", required = true) @RequestParam String username,
+                                                     @ApiParam(value = "The password for login in clear text", required = true) @RequestParam String password) {
+        return ResponseEntity.ok(Map.of("message", userService.login(username, password)));
     }
 
     @ApiOperation(value = "Logs out current logged in user session")
@@ -149,7 +150,7 @@ public class UserController {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 401, message = "Unauthorized")})
     @GetMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return ResponseEntity.ok(userService.logout());
+    public ResponseEntity<Map<String, String>> logout() {
+        return ResponseEntity.ok(Map.of("message", userService.logout()));
     }
 }

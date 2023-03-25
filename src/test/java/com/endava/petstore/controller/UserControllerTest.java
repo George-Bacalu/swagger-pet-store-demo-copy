@@ -3,6 +3,7 @@ package com.endava.petstore.controller;
 import com.endava.petstore.model.User;
 import com.endava.petstore.service.UserService;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -146,21 +147,21 @@ class UserControllerTest {
     void login_shouldAuthenticateTheUserIntoTheSystem() {
         String username = "test_username1", password = "#Test_password1", message = "Logged in successfully";
         given(userService.login(username, password)).willReturn(message);
-        ResponseEntity<String> response = userController.login(username, password);
+        ResponseEntity<Map<String, String>> response = userController.login(username, password);
         verify(userService).login(username, password);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(message);
+        assertThat(response.getBody()).containsEntry("message", message);
     }
 
     @Test
     void logout_shouldTerminateCurrentLoggedInUserSession() {
         String message = "Logged out successfully";
         given(userService.logout()).willReturn(message);
-        ResponseEntity<String> response = userController.logout();
+        ResponseEntity<Map<String, String>> response = userController.logout();
         verify(userService).logout();
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo(message);
+        assertThat(response.getBody()).containsEntry("message", message);
     }
 }
