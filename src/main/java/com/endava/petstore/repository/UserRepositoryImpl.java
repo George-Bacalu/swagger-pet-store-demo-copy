@@ -10,6 +10,7 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;
 
+import static com.endava.petstore.constants.Constants.USERNAME_NOT_FOUND;
 import static com.endava.petstore.constants.Constants.USER_NOT_FOUND;
 
 @Repository
@@ -74,6 +75,47 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User updateUser(User user) {
         User updatedUser = getUserById(user.getId());
+        return getUpdatedUserFields(user, updatedUser);
+    }
+
+    @Override
+    public void deleteUserById(Long userId) {
+        users.remove(getUserById(userId).getId());
+    }
+
+    @Override
+    public List<User> saveUsersArray(User[] users) {
+        List<User> usersList = new ArrayList<>();
+        for(User user : users) {
+            usersList.add(saveUser(user));
+        }
+        return usersList;
+    }
+
+    @Override
+    public List<User> saveUsersList(List<User> users) {
+        return users.stream().map(this::saveUser).toList();
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return users.values().stream()
+              .filter(user -> user.getUsername().equals(username)).findFirst()
+              .orElseThrow(() -> new ResourceNotFoundException(String.format(USERNAME_NOT_FOUND, username)));
+    }
+
+    @Override
+    public User updateUserByUsername(User user, String username) {
+        User updatedUser = getUserByUsername(username);
+        return getUpdatedUserFields(user, updatedUser);
+    }
+
+    @Override
+    public void deleteUserByUsername(String username) {
+        users.remove(getUserByUsername(username).getId());
+    }
+
+    private User getUpdatedUserFields(User user, User updatedUser) {
         updatedUser.setUsername(user.getUsername());
         updatedUser.setFirstName(user.getFirstName());
         updatedUser.setLastName(user.getLastName());
@@ -82,10 +124,5 @@ public class UserRepositoryImpl implements UserRepository {
         updatedUser.setPhone(user.getPhone());
         updatedUser.setUserStatus(user.getUserStatus());
         return updatedUser;
-    }
-
-    @Override
-    public void deleteUserById(Long userId) {
-        users.remove(getUserById(userId).getId());
     }
 }

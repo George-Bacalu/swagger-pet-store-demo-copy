@@ -52,12 +52,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    @ApiOperation(value = "Add a new user", response = User.class)
+    @ApiOperation(value = "Create user", notes = "This can only be done by the logged in user", response = User.class)
     @ApiResponses(value = {
           @ApiResponse(code = 201, message = "Successful operation"),
           @ApiResponse(code = 405, message = "Invalid input")})
     @PostMapping(consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
-    public ResponseEntity<User> saveUser(@ApiParam(value = "User object that needs to be added", required = true) @RequestBody @Valid User user) {
+    public ResponseEntity<User> saveUser(@ApiParam(value = "Created user object", required = true) @RequestBody @Valid User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
     }
 
@@ -80,6 +80,56 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@ApiParam(value = "User ID to delete", example = "1", required = true) @PathVariable Long userId) {
         userService.deleteUserById(userId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "Creates list of users with given input array", response = List.class)
+    @ApiResponses(value = {
+          @ApiResponse(code = 201, message = "Successful operation"),
+          @ApiResponse(code = 405, message = "Invalid input")})
+    @PostMapping(value = "/createWithArray", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
+    public ResponseEntity<List<User>> saveUsersArray(@ApiParam(value = "List of user object", required = true) @RequestBody @Valid User[] users) {
+        return ResponseEntity.ok(userService.saveUsersArray(users));
+    }
+
+    @ApiOperation(value = "Creates list of users with given input array", response = List.class)
+    @ApiResponses(value = {
+          @ApiResponse(code = 201, message = "Successful operation"),
+          @ApiResponse(code = 405, message = "Invalid input")})
+    @PostMapping(value = "/createWithList", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
+    public ResponseEntity<List<User>> saveUsersList(@ApiParam(value = "List of user object", required = true) @RequestBody @Valid List<User> users) {
+        return ResponseEntity.ok(userService.saveUsersList(users));
+    }
+
+    @ApiOperation(value = "Get user by user name", response = User.class)
+    @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Successful operation"),
+          @ApiResponse(code = 400, message = "Invalid username supplied"),
+          @ApiResponse(code = 404, message = "User not found")})
+    @GetMapping("/by/{username}")
+    public ResponseEntity<User> getUserByUsername(@ApiParam(value = "The name that needs to be fetched. Use test_username1 for testing", required = true) @PathVariable String username) {
+        return ResponseEntity.ok(userService.getUserByUsername(username));
+    }
+
+    @ApiOperation(value = "Update user by user name", notes = "This can only be done by the logged in user", response = User.class)
+    @ApiResponses(value = {
+          @ApiResponse(code = 204, message = "Successful operation"),
+          @ApiResponse(code = 400, message = "Invalid username supplied"),
+          @ApiResponse(code = 404, message = "User not found")})
+    @PutMapping(value = "/by/{username}", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
+    public ResponseEntity<User> updateUserByUsername(@ApiParam(value = "Updated user object", required = true) @RequestBody @Valid User user,
+                                                     @ApiParam(value = "Username that needs to be updated", required = true) @PathVariable String username) {
+        return ResponseEntity.ok(userService.updateUserByUsername(user, username));
+    }
+
+    @ApiOperation(value = "Delete user by username", notes = "This can only be done by the logged in user")
+    @ApiResponses(value = {
+          @ApiResponse(code = 204, message = "Successful operation"),
+          @ApiResponse(code = 400, message = "Invalid ID supplied"),
+          @ApiResponse(code = 404, message = "User not found")})
+    @DeleteMapping("/by/{username}")
+    public ResponseEntity<Void> deleteUserByUsername(@ApiParam(value = "Username that needs to be deleted", required = true) @PathVariable String username) {
+        userService.deleteUserByUsername(username);
         return ResponseEntity.noContent().build();
     }
 }

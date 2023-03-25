@@ -14,4 +14,14 @@ public interface UserService {
     User updateUser(User user);
 
     void deleteUserById(Long userId);
+
+    List<User> saveUsersArray(User[] users);
+
+    List<User> saveUsersList(List<User> users);
+
+    User getUserByUsername(String username);
+
+    User updateUserByUsername(User user, String username);
+
+    void deleteUserByUsername(String username);
 }
