@@ -15,6 +15,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static com.endava.petstore.constants.Constants.USERNAME_NOT_FOUND;
 import static com.endava.petstore.constants.Constants.USER_NOT_FOUND;
@@ -23,6 +25,7 @@ import static com.endava.petstore.mock.UserMock.getMockedUser2;
 import static com.endava.petstore.mock.UserMock.getMockedUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -176,7 +179,12 @@ class UserControllerIntegrationTest {
 
     @Test
     void login_shouldAuthenticateTheUserIntoTheSystem() throws Exception {
-        ResponseEntity<String> response = template.getForEntity("/user/login?username=test_username1&password=%23Test_password1", String.class);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("username", "test_username1");
+        body.add("password", "#Test_password1");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_FORM_URLENCODED);
+        ResponseEntity<String> response = template.postForEntity("/user/login", new HttpEntity<>(body, headers), String.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getHeaders().getContentType()).isEqualTo(APPLICATION_JSON);

@@ -139,7 +139,7 @@ public class UserController {
     @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Successful operation"),
           @ApiResponse(code = 400, message = "Invalid username/password supplied")})
-    @GetMapping("/login")
+    @PostMapping(value = "/login", consumes = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public ResponseEntity<Map<String, String>> login(@ApiParam(value = "The user name for login", required = true) @RequestParam String username,
                                                      @ApiParam(value = "The password for login in clear text", required = true) @RequestParam String password) {
         return ResponseEntity.ok(Map.of("message", userService.login(username, password)));
