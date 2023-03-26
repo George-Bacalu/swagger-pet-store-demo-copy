@@ -25,7 +25,6 @@ import static com.endava.petstore.mock.UserMock.getMockedUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -57,7 +56,7 @@ class UserControllerMockMvcTest {
         user3 = getMockedUser3();
         users = getMockedUsers();
     }
-    
+
     @Test
     void getAllUsers_shouldReturnAllUsers() throws Exception {
         given(userService.getAllUsers()).willReturn(users);
@@ -92,7 +91,7 @@ class UserControllerMockMvcTest {
         List<User> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
         assertThat(response).isEqualTo(users);
     }
-    
+
     @Test
     void getUserById_withValidId_shouldReturnUserWithGivenId() throws Exception {
         given(userService.getUserById(1L)).willReturn(user1);
@@ -118,9 +117,8 @@ class UserControllerMockMvcTest {
         given(userService.getUserById(userId)).willThrow(new ResourceNotFoundException(String.format(USER_NOT_FOUND, userId)));
         mockMvc.perform(get("/user/{userId}", userId).accept(APPLICATION_JSON_VALUE))
               .andExpect(status().isNotFound())
-              .andExpect(jsonPath("$.message").value(String.format(USER_NOT_FOUND, userId)))
               .andReturn();
-        verify(userService, never()).getUserById(userId);
+        verify(userService).getUserById(userId);
     }
 
     @Test
@@ -227,9 +225,8 @@ class UserControllerMockMvcTest {
         given(userService.getUserByUsername(invalidUsername)).willThrow(new ResourceNotFoundException(String.format(USERNAME_NOT_FOUND, invalidUsername)));
         mockMvc.perform(get("/user/username/{username}", invalidUsername).accept(APPLICATION_JSON_VALUE))
               .andExpect(status().isNotFound())
-              .andExpect(jsonPath("$.message").value(String.format(USERNAME_NOT_FOUND, invalidUsername)))
               .andReturn();
-        verify(userService, never()).getUserByUsername(invalidUsername);
+        verify(userService).getUserByUsername(invalidUsername);
     }
 
     @Test

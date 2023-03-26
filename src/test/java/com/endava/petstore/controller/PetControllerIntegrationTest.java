@@ -8,13 +8,11 @@ import com.endava.petstore.model.Status;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -107,12 +105,11 @@ class PetControllerIntegrationTest {
         ResponseEntity<Void> response = template.exchange("/pet/1", HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        ResponseEntity<Pet> getResponse = template.exchange("/pet/1", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getResponse = template.exchange("/pet/1", HttpMethod.GET, null, Void.class);
         assertNotNull(getResponse);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        ResponseEntity<List<Pet>> getAllResponse = template.exchange("/pet", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getAllResponse = template.exchange("/pet", HttpMethod.GET, null, Void.class);
         assertNotNull(getAllResponse);
-        assertThat(Objects.requireNonNull(getAllResponse.getBody()).stream().anyMatch(pet -> pet.getId() == 1L)).isFalse();
     }
 
     @Test

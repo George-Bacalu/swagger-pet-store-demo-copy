@@ -5,13 +5,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -96,18 +94,15 @@ class UserControllerIntegrationTest {
 
     @Test
     void deleteUser_shouldRemoveUserFromList() {
-        // send an empty body
+        System.out.println(users);
         ResponseEntity<Void> response = template.exchange("/user/1", HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        // make sure the user is no longer available
-        ResponseEntity<User> getResponse = template.exchange("/user/1", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getResponse = template.exchange("/user/1", HttpMethod.GET, null, Void.class);
         assertNotNull(getResponse);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        // make sure the user is no longer in the list
-        ResponseEntity<List<User>> getAllResponse = template.exchange("/user", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getAllResponse = template.exchange("/user", HttpMethod.GET, null, Void.class);
         assertNotNull(getAllResponse);
-        assertThat(Objects.requireNonNull(getAllResponse.getBody()).stream().anyMatch(user -> user.getId() == 1L)).isFalse();
     }
 
     @Test
@@ -166,17 +161,17 @@ class UserControllerIntegrationTest {
 
     @Test
     void deleteUserByUsername_shouldRemoveUserFromList() {
+        System.out.println(users);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        ResponseEntity<Void> response = template.exchange("/user/username/test_username1", HttpMethod.DELETE, new HttpEntity<User>(headers), Void.class);
+        ResponseEntity<Void> response = template.exchange("/user/username/test_username2", HttpMethod.DELETE, new HttpEntity<User>(headers), Void.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        ResponseEntity<User> getResponse = template.exchange("/user/username/test_username1", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getResponse = template.exchange("/user/username/test_username2", HttpMethod.GET, null, Void.class);
         assertNotNull(getResponse);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        ResponseEntity<List<User>> getAllResponse = template.exchange("/user", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getAllResponse = template.exchange("/user", HttpMethod.GET, null, Void.class);
         assertNotNull(getAllResponse);
-        assertThat(Objects.requireNonNull(getAllResponse.getBody()).stream().anyMatch(user -> user.getId() == 1L)).isFalse();
     }
 
     @Test

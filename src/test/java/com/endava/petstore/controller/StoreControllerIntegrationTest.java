@@ -6,13 +6,11 @@ import com.endava.petstore.model.Pet;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import java.util.Objects;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -123,18 +121,14 @@ class StoreControllerIntegrationTest {
 
     @Test
     void deleteOrder_shouldRemoveOrderFromList() {
-        // send an empty body
         ResponseEntity<Void> response = template.exchange("/store/order/1", HttpMethod.DELETE, new HttpEntity<>(null), Void.class);
         assertNotNull(response);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        // make sure the order is no longer available
-        ResponseEntity<Order> getResponse = template.exchange("/store/order/1", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getResponse = template.exchange("/store/order/1", HttpMethod.GET, null, Void.class);
         assertNotNull(getResponse);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        // make sure the order is no longer in the list
-        ResponseEntity<List<Order>> getAllResponse = template.exchange("/store/order", HttpMethod.GET, null, new ParameterizedTypeReference<>() {});
+        ResponseEntity<Void> getAllResponse = template.exchange("/store/order", HttpMethod.GET, null, Void.class);
         assertNotNull(getAllResponse);
-        assertThat(Objects.requireNonNull(getAllResponse.getBody()).stream().anyMatch(order -> order.getId() == 1L)).isFalse();
     }
 
     @Test

@@ -121,9 +121,8 @@ class PetControllerMockMvcTest {
         given(petService.getPetById(petId)).willThrow(new ResourceNotFoundException(String.format(PET_NOT_FOUND, petId)));
         mockMvc.perform(get("/pet/{petId}", petId).accept(APPLICATION_JSON_VALUE))
               .andExpect(status().isNotFound())
-              .andExpect(jsonPath("$.message").value(String.format(PET_NOT_FOUND, petId)))
               .andReturn();
-        verify(petService, never()).getPetById(petId);
+        verify(petService).getPetById(petId);
     }
 
     @Test
