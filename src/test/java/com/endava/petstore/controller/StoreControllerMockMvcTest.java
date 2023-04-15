@@ -24,7 +24,7 @@ import static com.endava.petstore.mock.StoreMock.getMockedOrder2;
 import static com.endava.petstore.mock.StoreMock.getMockedOrder3;
 import static com.endava.petstore.mock.StoreMock.getMockedOrders;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.contains;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -66,24 +66,12 @@ class StoreControllerMockMvcTest {
         given(storeService.getAllOrders()).willReturn(orders);
         MvcResult result = mockMvc.perform(get("/store/order").accept(APPLICATION_JSON_VALUE))
               .andExpect(status().isOk())
-              .andExpect(jsonPath("$[0].id").value(order1.getId()))
-              .andExpect(jsonPath("$[0].petId").value(order1.getPetId()))
-              .andExpect(jsonPath("$[0].quantity").value(order1.getQuantity()))
-              .andExpect(jsonPath("$[0].shipDate").value(equalTo(order1.getShipDate().toString() + ":00")))
-              .andExpect(jsonPath("$[0].orderStatus").value(order1.getOrderStatus().name()))
-              .andExpect(jsonPath("$[0].complete").value(order1.getComplete()))
-              .andExpect(jsonPath("$[1].id").value(order2.getId()))
-              .andExpect(jsonPath("$[1].petId").value(order2.getPetId()))
-              .andExpect(jsonPath("$[1].quantity").value(order2.getQuantity()))
-              .andExpect(jsonPath("$[1].shipDate").value(equalTo(order2.getShipDate().toString() + ":00")))
-              .andExpect(jsonPath("$[1].orderStatus").value(order2.getOrderStatus().name()))
-              .andExpect(jsonPath("$[1].complete").value(order2.getComplete()))
-              .andExpect(jsonPath("$[2].id").value(order3.getId()))
-              .andExpect(jsonPath("$[2].petId").value(order3.getPetId()))
-              .andExpect(jsonPath("$[2].quantity").value(order3.getQuantity()))
-              .andExpect(jsonPath("$[2].shipDate").value(equalTo(order3.getShipDate().toString() + ":00")))
-              .andExpect(jsonPath("$[2].orderStatus").value(order3.getOrderStatus().name()))
-              .andExpect(jsonPath("$[2].complete").value(order3.getComplete()))
+              .andExpect(jsonPath("$[*].id").value(contains(order1.getId().intValue(), order2.getId().intValue(), order3.getId().intValue())))
+              .andExpect(jsonPath("$[*].petId").value(contains(order1.getPetId().intValue(), order2.getPetId().intValue(), order3.getPetId().intValue())))
+              .andExpect(jsonPath("$[*].quantity").value(contains(order1.getQuantity(), order2.getQuantity(), order3.getQuantity())))
+              .andExpect(jsonPath("$[*].shipDate").value(contains(order1.getShipDate().toString() + ":00", order2.getShipDate().toString() + ":00", order3.getShipDate().toString() + ":00")))
+              .andExpect(jsonPath("$[*].orderStatus").value(contains(order1.getOrderStatus().name(), order2.getOrderStatus().name(), order3.getOrderStatus().name())))
+              .andExpect(jsonPath("$[*].complete").value(contains(order1.getComplete(), order2.getComplete(), order3.getComplete())))
               .andReturn();
         verify(storeService).getAllOrders();
         List<Order> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {

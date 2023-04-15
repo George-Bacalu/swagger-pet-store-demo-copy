@@ -80,7 +80,7 @@ public class User implements Serializable {
      * $ represents the end of the string.
      */
     @ApiModelProperty(name = "phone", dataType = "string")
-    @NotBlank(message = "Password must not be blank")
+    @NotBlank(message = "Phone must not be blank")
     @Pattern(regexp = "^(00|\\+?40|0)(7\\d{2}|\\d{2}[13]|[2-37]\\d|8[02-9]|9[0-2])\\s?\\d{3}\\s?\\d{3}$")
     private String phone;
 

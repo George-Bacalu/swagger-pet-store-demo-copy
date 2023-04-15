@@ -26,6 +26,7 @@ import static com.endava.petstore.mock.PetMock.getMockedPet2;
 import static com.endava.petstore.mock.PetMock.getMockedPet3;
 import static com.endava.petstore.mock.PetMock.getMockedPets;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.ArgumentMatchers.any;
@@ -70,27 +71,20 @@ class PetControllerMockMvcTest {
         given(petService.getAllPets()).willReturn(pets);
         MvcResult result = mockMvc.perform(get("/pet").accept(APPLICATION_JSON_VALUE))
               .andExpect(status().isOk())
-              .andExpect(jsonPath("$[0].id").value(pet1.getId()))
-              .andExpect(jsonPath("$[0].name").value(pet1.getName()))
-              .andExpect(jsonPath("$[0].category").value(pet1.getCategory()))
-              .andExpect(jsonPath("$[0].photoUrls", hasItems(pet1.getPhotoUrls().toArray())))
-              .andExpect(jsonPath("$[0].tags[*].id", containsInAnyOrder(1, 2)))
-              .andExpect(jsonPath("$[0].tags[*].name", containsInAnyOrder("test_tag1", "test_tag2")))
-              .andExpect(jsonPath("$[0].status").value(pet1.getStatus().name()))
-              .andExpect(jsonPath("$[1].id").value(pet2.getId()))
-              .andExpect(jsonPath("$[1].name").value(pet2.getName()))
-              .andExpect(jsonPath("$[1].category").value(pet2.getCategory()))
-              .andExpect(jsonPath("$[1].photoUrls", hasItems(pet2.getPhotoUrls().toArray())))
-              .andExpect(jsonPath("$[1].tags[*].id", containsInAnyOrder(1, 2)))
-              .andExpect(jsonPath("$[1].tags[*].name", containsInAnyOrder("test_tag3", "test_tag4")))
-              .andExpect(jsonPath("$[1].status").value(pet2.getStatus().name()))
-              .andExpect(jsonPath("$[2].id").value(pet3.getId()))
-              .andExpect(jsonPath("$[2].name").value(pet3.getName()))
-              .andExpect(jsonPath("$[2].category").value(pet3.getCategory()))
-              .andExpect(jsonPath("$[2].photoUrls", hasItems(pet3.getPhotoUrls().toArray())))
-              .andExpect(jsonPath("$[2].tags[*].id", containsInAnyOrder(1, 2)))
-              .andExpect(jsonPath("$[2].tags[*].name", containsInAnyOrder("test_tag5", "test_tag6")))
-              .andExpect(jsonPath("$[2].status").value(pet3.getStatus().name()))
+              .andExpect(jsonPath("$[*].id").value(contains(pet1.getId().intValue(),pet2.getId().intValue(), pet3.getId().intValue())))
+              .andExpect(jsonPath("$[*].name").value(contains(pet1.getName(), pet2.getName(), pet3.getName())))
+              .andExpect(jsonPath("$[*].category.id").value(contains(pet1.getCategory().getId().intValue(), pet2.getCategory().getId().intValue(), pet3.getCategory().getId().intValue())))
+              .andExpect(jsonPath("$[*].category.name").value(contains(pet1.getCategory().getName(), pet2.getCategory().getName(), pet3.getCategory().getName())))
+              .andExpect(jsonPath("$[*].photoUrls[*]").value(contains(pet1.getPhotoUrls().get(0), pet1.getPhotoUrls().get(1),
+                                                                      pet2.getPhotoUrls().get(0), pet2.getPhotoUrls().get(1),
+                                                                      pet3.getPhotoUrls().get(0), pet3.getPhotoUrls().get(1))))
+              .andExpect(jsonPath("$[*].tags[*].id").value(contains(pet1.getTags().get(0).getId().intValue(), pet1.getTags().get(1).getId().intValue(),
+                                                                    pet2.getTags().get(0).getId().intValue(), pet2.getTags().get(1).getId().intValue(),
+                                                                    pet3.getTags().get(0).getId().intValue(), pet3.getTags().get(1).getId().intValue())))
+              .andExpect(jsonPath("$[*].tags[*].name").value(contains(pet1.getTags().get(0).getName(), pet1.getTags().get(1).getName(),
+                                                                      pet2.getTags().get(0).getName(), pet2.getTags().get(1).getName(),
+                                                                      pet3.getTags().get(0).getName(), pet3.getTags().get(1).getName())))
+              .andExpect(jsonPath("$[*].status").value(contains(pet1.getStatus().name(), pet2.getStatus().name(), pet3.getStatus().name())))
               .andReturn();
         verify(petService).getAllPets();
         List<Pet> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});

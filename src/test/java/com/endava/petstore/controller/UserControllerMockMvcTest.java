@@ -22,6 +22,7 @@ import static com.endava.petstore.mock.UserMock.getMockedUser1;
 import static com.endava.petstore.mock.UserMock.getMockedUser2;
 import static com.endava.petstore.mock.UserMock.getMockedUser3;
 import static com.endava.petstore.mock.UserMock.getMockedUsers;
+import static org.hamcrest.Matchers.contains;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -62,30 +63,14 @@ class UserControllerMockMvcTest {
         given(userService.getAllUsers()).willReturn(users);
         MvcResult result = mockMvc.perform(get("/user").accept(MediaType.APPLICATION_JSON_VALUE))
               .andExpect(status().isOk())
-              .andExpect(jsonPath("$[0].id").value(user1.getId()))
-              .andExpect(jsonPath("$[0].username").value(user1.getUsername()))
-              .andExpect(jsonPath("$[0].firstName").value(user1.getFirstName()))
-              .andExpect(jsonPath("$[0].lastName").value(user1.getLastName()))
-              .andExpect(jsonPath("$[0].email").value(user1.getEmail()))
-              .andExpect(jsonPath("$[0].password").value(user1.getPassword()))
-              .andExpect(jsonPath("$[0].phone").value(user1.getPhone()))
-              .andExpect(jsonPath("$[0].userStatus").value(user1.getUserStatus()))
-              .andExpect(jsonPath("$[1].id").value(user2.getId()))
-              .andExpect(jsonPath("$[1].username").value(user2.getUsername()))
-              .andExpect(jsonPath("$[1].firstName").value(user2.getFirstName()))
-              .andExpect(jsonPath("$[1].lastName").value(user2.getLastName()))
-              .andExpect(jsonPath("$[1].email").value(user2.getEmail()))
-              .andExpect(jsonPath("$[1].password").value(user2.getPassword()))
-              .andExpect(jsonPath("$[1].phone").value(user2.getPhone()))
-              .andExpect(jsonPath("$[1].userStatus").value(user2.getUserStatus()))
-              .andExpect(jsonPath("$[2].id").value(user3.getId()))
-              .andExpect(jsonPath("$[2].username").value(user3.getUsername()))
-              .andExpect(jsonPath("$[2].firstName").value(user3.getFirstName()))
-              .andExpect(jsonPath("$[2].lastName").value(user3.getLastName()))
-              .andExpect(jsonPath("$[2].email").value(user3.getEmail()))
-              .andExpect(jsonPath("$[2].password").value(user3.getPassword()))
-              .andExpect(jsonPath("$[2].phone").value(user3.getPhone()))
-              .andExpect(jsonPath("$[2].userStatus").value(user3.getUserStatus()))
+              .andExpect(jsonPath("$[*].id").value(contains(user1.getId().intValue(), user2.getId().intValue(), user3.getId().intValue())))
+              .andExpect(jsonPath("$[*].username").value(contains(user1.getUsername(), user2.getUsername(), user3.getUsername())))
+              .andExpect(jsonPath("$[*].firstName").value(contains(user1.getFirstName(), user2.getFirstName(), user3.getFirstName())))
+              .andExpect(jsonPath("$[*].lastName").value(contains(user1.getLastName(), user2.getLastName(), user3.getLastName())))
+              .andExpect(jsonPath("$[*].email").value(contains(user1.getEmail(), user2.getEmail(), user3.getEmail())))
+              .andExpect(jsonPath("$[*].password").value(contains(user1.getPassword(), user2.getPassword(), user3.getPassword())))
+              .andExpect(jsonPath("$[*].phone").value(contains(user1.getPhone(), user2.getPhone(), user3.getPhone())))
+              .andExpect(jsonPath("$[*].userStatus").value(contains(user1.getUserStatus(), user2.getUserStatus(), user3.getUserStatus())))
               .andReturn();
         verify(userService).getAllUsers();
         List<User> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
